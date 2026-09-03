@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Codexifyr — Website Product Scraper</title>
+  <style>
+    :root{color-scheme:dark;--bg:#050706;--panel:#0b110e;--line:#183d2a;--green:#38ff83;--muted:#8da99a;--text:#effff6}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 22%,#12361f55,transparent 28%),linear-gradient(#020403,#070b08 55%,#020302);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden}
+    body:before{content:"";position:fixed;inset:0;background-image:linear-gradient(#45ff8110 1px,transparent 1px),linear-gradient(90deg,#45ff8110 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,transparent,#000 25%,#000 80%,transparent);pointer-events:none}
+    .noise{position:fixed;inset:0;opacity:.16;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0 31px,#38ff8309 32px 33px),repeating-linear-gradient(0deg,transparent 0 7px,#38ff8308 8px 9px)}
+    main{min-height:100vh;display:grid;place-items:center;padding:28px;position:relative}
+    .hero{text-align:center;max-width:980px;position:relative}.eyebrow{letter-spacing:.38em;color:#67ff9e;font-size:12px;text-transform:uppercase;margin-bottom:26px}.brand{font-family:Arial Black,Impact,sans-serif;font-size:clamp(54px,10vw,132px);line-height:.85;letter-spacing:-.065em;margin:0;text-transform:uppercase;text-shadow:0 0 30px #29ff7644}.brand .x{color:var(--green);text-shadow:0 0 28px #38ff83}.tag{margin:24px auto 42px;color:#d7f9e4;letter-spacing:.27em;font-size:clamp(12px,1.7vw,18px)}
+    .go{display:inline-flex;align-items:center;gap:14px;padding:17px 26px;border:1px solid var(--green);border-radius:7px;text-decoration:none;color:#dfffea;background:#07110b;box-shadow:0 0 28px #38ff8322,inset 0 0 20px #38ff830c;font-weight:800;letter-spacing:.04em;transition:.2s}.go:hover{transform:translateY(-2px);background:#0b1b12;box-shadow:0 0 40px #38ff8344}.prompt{color:var(--green)}
+    .corner{position:fixed;color:#3c6b4c;font-size:11px;line-height:1.6;opacity:.8}.tl{top:28px;left:30px}.br{right:30px;bottom:28px;text-align:right}.status{display:inline-block;width:7px;height:7px;border-radius:99px;background:var(--green);box-shadow:0 0 12px var(--green);margin-right:8px}
+    @media(max-width:600px){.corner{display:none}.tag{letter-spacing:.16em}.go{width:100%;justify-content:center}}
+  </style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="corner tl">// CODEXIFYR_SYSTEM<br>build: local<br>mode: single-site</div>
+<div class="corner br"><span class="status"></span>LOCAL SYSTEM READY<br>public product data only</div>
+<main>
+  <section class="hero">
+    <div class="eyebrow">developer utility</div>
+    <h1 class="brand">CODE<span class="x">X</span>IFYR</h1>
+    <div class="tag">&lt; WEBSITE PRODUCT SCRAPER /&gt;</div>
+    <a class="go" href="/dashboard"><span class="prompt">&gt;_</span> Go to Scraper Dashboard <span>→</span></a>
+  </section>
+</main>
+</body>
+</html>

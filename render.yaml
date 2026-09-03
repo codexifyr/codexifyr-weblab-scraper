@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: codexifyr-weblab-scraper
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    envVars:
+      - key: CODEXIFYR_DATA_DIR
+        value: /tmp/codexifyr-runtime

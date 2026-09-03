@@ -1,0 +1,62 @@
+CODEXIFYR WEBLAB 4.2.3
+=====================
+
+Suite tools
+- Website Scraper / WordPress migration
+- File Correction / Repair
+- Shopify Product Scraper
+- Validation Center with separate WordPress and Shopify CSV validators
+- Migration / Export
+- WordPress Importer plugin
+
+IMPORTANT — SHOPIFY SCRAPER LOCK
+The supplied working Shopify scraper core is bundled at:
+  tools\shopify_scraper\scraper.py
+
+It is byte-for-byte unchanged from the user-supplied scraper.py.
+SHA-256:
+  47b86a81f38aeae7c1c5b0060eddbe5fd5353358c7a7885a3912ae400303a2b8
+
+A source-preservation copy of the original app code is also under:
+  tools\shopify_scraper\original_app\
+
+WebLab launches the locked scraper as a separate child process. The scraper's
+CSV generation, variant logic, image logic, sold-out handling and manual CAPTCHA
+behavior are not rewritten by the WebLab frontend.
+
+FILE CORRECTION
+File Correction now reuses the unchanged scraper's extraction logic as one
+trusted source for WooCommerce/static variant data and SEO, then combines it
+with WebLab's browser-aware dynamic WooCommerce variation engine. The original
+uploaded JSON stays immutable; corrections are written to corrected-site-data.json.
+
+VALIDATION
+Validation is read-only.
+- WordPress Migration validator shows scan/repair jobs only.
+- Shopify CSV validator shows Shopify scraper jobs only and reads shopify_products.csv.
+
+BRANDING
+The existing transparent Codexifyr logo is preserved. “WebLab” is rendered as
+separate styled text beneath it. The animated purple cyber background spans the
+full home page; there is no black rectangle/image behind the logo.
+
+V4.2.3 CAPTURE ISOLATION
+- The crawler may VISIT unselected pages for URL discovery.
+- Only checked capture types are SAVED into site-data.json.
+- Products-only mode exports products and their product images/variations only.
+- Categories unchecked => no top-level categories and no product category assignments.
+- SEO unchecked => no saved meta title/description.
+- Pages/Blogs/Menus/Branding/Design unchecked => those sections remain empty.
+- Media is rebuilt from selected exported content only; discovery-page assets are discarded.
+- Validation reads capture_options so intentionally omitted sections are not falsely reported as missing.
+
+LOCKED SHOPIFY SCRAPER SHA-256
+47b86a81f38aeae7c1c5b0060eddbe5fd5353358c7a7885a3912ae400303a2b8
+
+
+V4.2.3 SHOPIFY -> WORDPRESS ROUTING
+- Source platform and destination are independent. Shopify-hosted source sites can be migrated to WordPress/WooCommerce.
+- /products/ are Products, /collections/ are product Categories, /blogs/ are Blogs, /policies/ and /pages/ are Pages.
+- Products-only mode saves only Products while still permitting homepage/menu/sitemap/collection paths for discovery.
+- Max Products limits SAVED products; Max Crawl URLs limits visited URLs.
+- The original Shopify CSV scraper source is unchanged and still runs as a separate tool.

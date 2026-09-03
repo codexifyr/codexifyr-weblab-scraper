@@ -1,0 +1,64 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local configuration / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*.json
+secrets*.json
+
+# Codexifyr runtime/customer/site data
+runtime/
+output/
+jobs/
+uploads/
+logs/
+site-data.json
+corrected-site-data.json
+original-site-data.json
+migration-report.json
+repair-report.json
+scan-checkpoint.json
+repair-delta.jsonl
+IMPORT-INSTRUCTIONS.txt
+codexifyr-source-theme.zip
+codexifyr-wordpress-migration.zip
+
+# Generated archives/release artifacts
+*.zip
+!wordpress-plugin/**
+
+# Playwright/browser caches
+playwright-report/
+test-results/
+.pw-browsers/
+ms-playwright/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.tmp
+*.bak
+
+# Logs / crash files
+*.log
+*.trace

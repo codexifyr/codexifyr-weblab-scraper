@@ -1,0 +1,1315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Codexifyr — Scraper Dashboard</title>
+
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#050806;
+  --panel:#0b100d;
+  --panel2:#0f1712;
+  --line:#203b2a;
+  --green:#38ff83;
+  --green2:#13c95b;
+  --text:#edfff4;
+  --muted:#94a99b;
+  --red:#ff5d72;
+  --amber:#ffc857;
+  --cyan:#57d9ff
+}
+
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 70% 0,#12361e45,transparent 31%),
+    #050806;
+  color:var(--text);
+  font-family:Inter,ui-monospace,SFMono-Regular,Menlo,Consolas,monospace
+}
+
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(#37ff8207 1px,transparent 1px),
+    linear-gradient(90deg,#37ff8207 1px,transparent 1px);
+  background-size:36px 36px
+}
+
+.shell{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:230px 1fr;
+  position:relative
+}
+
+.side{
+  border-right:1px solid var(--line);
+  padding:24px 17px;
+  background:#050806dd;
+  backdrop-filter:blur(8px)
+}
+
+.logo{
+  font-size:22px;
+  font-weight:900;
+  letter-spacing:-.05em
+}
+
+.logo span{
+  color:var(--green)
+}
+
+.sub{
+  font-size:10px;
+  color:var(--muted);
+  margin-top:5px
+}
+
+.nav{
+  margin-top:34px;
+  display:grid;
+  gap:8px
+}
+
+.nav a{
+  color:#9fb2a6;
+  text-decoration:none;
+  padding:11px 12px;
+  border-radius:7px
+}
+
+.nav a.active{
+  color:var(--green);
+  background:#0d1d13;
+  border:1px solid #1f5533
+}
+
+.sidefoot{
+  position:sticky;
+  top:calc(100vh - 110px);
+  font-size:10px;
+  color:#547060;
+  line-height:1.6
+}
+
+.main{
+  padding:26px;
+  min-width:0
+}
+
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:22px
+}
+
+.top h1{
+  font-size:19px;
+  margin:0
+}
+
+.sys{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:var(--muted);
+  font-size:12px
+}
+
+.switch{
+  position:relative;
+  width:54px;
+  height:29px
+}
+
+.switch input{
+  opacity:0;
+  width:0;
+  height:0
+}
+
+.slider{
+  position:absolute;
+  inset:0;
+  border-radius:99px;
+  background:#233029;
+  border:1px solid #34483b;
+  cursor:pointer
+}
+
+.slider:before{
+  content:"";
+  position:absolute;
+  width:21px;
+  height:21px;
+  left:3px;
+  top:3px;
+  border-radius:50%;
+  background:#819186;
+  transition:.2s
+}
+
+.switch input:checked + .slider{
+  background:#0c4b25;
+  border-color:#1cca60
+}
+
+.switch input:checked + .slider:before{
+  transform:translateX(25px);
+  background:var(--green);
+  box-shadow:0 0 14px #38ff83
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(280px,.85fr);
+  gap:18px
+}
+
+.card{
+  background:linear-gradient(180deg,#0c120f,#080d0a);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:18px
+}
+
+.card h2{
+  font-size:13px;
+  margin:0 0 15px;
+  color:#caffe0
+}
+
+.form{
+  display:grid;
+  grid-template-columns:1fr 140px 130px;
+  gap:10px
+}
+
+.field label{
+  display:block;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:#7f9788;
+  margin:0 0 6px
+}
+
+.field input{
+  width:100%;
+  height:42px;
+  border-radius:6px;
+  border:1px solid #294334;
+  background:#07100b;
+  color:#edfff4;
+  padding:0 12px;
+  outline:none
+}
+
+.field input:focus{
+  border-color:var(--green);
+  box-shadow:0 0 0 2px #38ff8320
+}
+
+.actions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:13px
+}
+
+.btn{
+  height:40px;
+  border-radius:6px;
+  border:1px solid #2d4737;
+  background:#0d1711;
+  color:#d8eee0;
+  padding:0 15px;
+  font:inherit;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer
+}
+
+.btn.primary{
+  background:linear-gradient(180deg,#30ef78,#19a953);
+  border-color:#46ff89;
+  color:#041308
+}
+
+.btn.stop{
+  border-color:#7a2632;
+  color:#ff8b9a;
+  background:#1a0b0e
+}
+
+.btn.continue{
+  border-color:#8b6b1c;
+  color:#ffe08a;
+  background:#1b1607
+}
+
+.btn:disabled{
+  opacity:.38;
+  cursor:not-allowed
+}
+
+.banner{
+  display:none;
+  margin-top:13px;
+  padding:12px 13px;
+  border:1px solid #805f16;
+  background:#1b1506;
+  color:#ffe08a;
+  border-radius:7px;
+  font-size:12px
+}
+
+.banner.show{
+  display:block
+}
+
+/* Five dashboard counters */
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin-top:16px
+}
+
+.metric{
+  padding:12px;
+  background:#09100c;
+  border:1px solid #193024;
+  border-radius:7px
+}
+
+.metric strong{
+  display:block;
+  font-size:21px;
+  color:var(--green)
+}
+
+.metric span{
+  font-size:10px;
+  color:var(--muted)
+}
+
+.progress{
+  margin-top:14px;
+  height:7px;
+  background:#111c15;
+  border-radius:99px;
+  overflow:hidden
+}
+
+.progress > i{
+  display:block;
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#20d565,#5eff96);
+  transition:.4s
+}
+
+.statusline{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin-top:9px;
+  color:var(--muted);
+  font-size:10px
+}
+
+.browser{
+  height:250px;
+  border:1px solid #284234;
+  border-radius:8px;
+  background:radial-gradient(circle at center,#102b1a,#050806 66%);
+  display:grid;
+  place-items:center;
+  text-align:center;
+  padding:18px;
+  overflow:hidden
+}
+
+.browser .chrome{
+  font-size:38px;
+  margin-bottom:7px
+}
+
+.browser p{
+  margin:4px;
+  color:#8da596;
+  font-size:11px;
+  line-height:1.5
+}
+
+.browser .url{
+  color:#d4f6df;
+  word-break:break-all;
+  max-width:100%;
+  font-size:10px
+}
+
+.browser-note{
+  margin-top:10px;
+  color:#718679;
+  font-size:10px;
+  line-height:1.5
+}
+
+.logcard{
+  grid-column:1/-1
+}
+
+.logs{
+  height:265px;
+  overflow:auto;
+  border:1px solid #1b3023;
+  background:#030604;
+  border-radius:7px;
+  padding:12px;
+  font-size:11px;
+  line-height:1.65;
+  color:#a8c6b2;
+  white-space:pre-wrap
+}
+
+.download{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:13px
+}
+
+.download .ready{
+  color:#8aa394;
+  font-size:11px
+}
+
+.error{
+  color:#ff8c9b;
+  font-size:11px;
+  margin-top:10px;
+  min-height:15px
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border:1px solid #284434;
+  border-radius:99px;
+  padding:6px 9px;
+  font-size:10px;
+  color:#abc3b3
+}
+
+.dot{
+  width:7px;
+  height:7px;
+  border-radius:99px;
+  background:#77857c
+}
+
+.dot.running{
+  background:var(--green);
+  box-shadow:0 0 10px var(--green)
+}
+
+.dot.paused_captcha{
+  background:var(--amber);
+  box-shadow:0 0 10px var(--amber)
+}
+
+.dot.error{
+  background:var(--red)
+}
+
+.dot.completed{
+  background:var(--cyan);
+  box-shadow:0 0 10px var(--cyan)
+}
+
+@media(max-width:1100px){
+  .metrics{
+    grid-template-columns:repeat(3,1fr)
+  }
+}
+
+@media(max-width:980px){
+  .shell{
+    grid-template-columns:1fr
+  }
+
+  .side{
+    display:none
+  }
+
+  .grid{
+    grid-template-columns:1fr
+  }
+
+  .form{
+    grid-template-columns:1fr 1fr
+  }
+
+  .field.url{
+    grid-column:1/-1
+  }
+}
+
+@media(max-width:560px){
+  .main{
+    padding:14px
+  }
+
+  .form,
+  .metrics{
+    grid-template-columns:1fr
+  }
+
+  .field.url{
+    grid-column:auto
+  }
+
+  .top{
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  .download{
+    align-items:flex-start;
+    flex-direction:column
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="shell">
+
+<aside class="side">
+
+  <div class="logo">
+    CODE<span>X</span>IFYR
+  </div>
+
+  <div class="sub">
+    Website Product Scraper
+  </div>
+
+  <nav class="nav">
+    <a href="/">⌂ Home</a>
+    <a class="active" href="/dashboard">▣ Scraper Dashboard</a>
+  </nav>
+
+  <div class="sidefoot">
+    Single-site scraper<br>
+    Local dashboard<br>
+    Shopify CSV workflow
+  </div>
+
+</aside>
+
+<main class="main">
+
+<div class="top">
+
+  <div>
+    <h1>Scraper Dashboard</h1>
+
+    <div class="sub">
+      Control the existing scraper engine from one place.
+    </div>
+  </div>
+
+  <div class="sys">
+
+    <span id="systemText">
+      SYSTEM OFF
+    </span>
+
+    <label class="switch">
+      <input id="systemToggle" type="checkbox">
+      <span class="slider"></span>
+    </label>
+
+    <span id="statusBadge" class="badge">
+      <i id="statusDot" class="dot"></i>
+      <span id="statusText">IDLE</span>
+    </span>
+
+  </div>
+
+</div>
+
+<div class="grid">
+
+<section class="card">
+
+<h2>// SCRAPER CONFIGURATION</h2>
+
+<div class="form">
+
+  <div class="field url">
+    <label>Website URL</label>
+    <input
+      id="url"
+      placeholder="https://example-store.com"
+    >
+  </div>
+
+  <div class="field">
+    <label>Delay / Speed (sec)</label>
+
+    <input
+      id="delay"
+      type="number"
+      min="0"
+      max="60"
+      step="0.1"
+      value="0.7"
+    >
+  </div>
+
+  <div class="field">
+    <label>Retries</label>
+
+    <input
+      id="retries"
+      type="number"
+      min="1"
+      max="20"
+      step="1"
+      value="3"
+    >
+  </div>
+
+</div>
+
+<div class="actions">
+
+<button
+  id="startBtn"
+  class="btn primary"
+  disabled
+>
+▶ Start Scraping
+</button>
+
+<button
+  id="stopBtn"
+  class="btn stop"
+  disabled
+>
+■ Stop Scraping
+</button>
+
+<button
+  id="continueBtn"
+  class="btn continue"
+  disabled
+>
+▶ Continue After CAPTCHA
+</button>
+
+</div>
+
+<div
+  id="captchaBanner"
+  class="banner"
+>
+⚠ CAPTCHA / browser challenge detected.
+Solve it manually in the visible scraper browser,
+then click <b>Continue After CAPTCHA</b>.
+</div>
+
+
+<!-- DASHBOARD COUNTERS -->
+
+<div class="metrics">
+
+  <div class="metric">
+    <strong id="products">0</strong>
+    <span>Products</span>
+  </div>
+
+  <div class="metric">
+    <strong id="variants">0</strong>
+    <span>Variants</span>
+  </div>
+
+  <div class="metric">
+    <strong id="images">0</strong>
+    <span>Images</span>
+  </div>
+
+  <div class="metric">
+    <strong id="collections">0</strong>
+    <span>Collections</span>
+  </div>
+
+  <div class="metric">
+    <strong id="elapsed">00:00</strong>
+    <span>Elapsed</span>
+  </div>
+
+</div>
+
+
+<div class="progress">
+  <i id="progressBar"></i>
+</div>
+
+<div class="statusline">
+
+  <span id="collectionText">
+    Collections 0 / 0
+  </span>
+
+  <span>
+    One website at a time
+  </span>
+
+</div>
+
+<div
+  id="error"
+  class="error"
+></div>
+
+</section>
+
+
+
+<aside class="card">
+
+<h2>// SCRAPER BROWSER</h2>
+
+<div class="browser">
+
+  <div>
+
+    <div class="chrome">
+      ◉
+    </div>
+
+    <p>
+      The existing scraper opens its own visible Chromium window.
+    </p>
+
+    <p
+      class="url"
+      id="currentUrl"
+    >
+      No active page
+    </p>
+
+    <div
+      class="actions"
+      style="justify-content:center"
+    >
+
+      <button
+        id="focusBtn"
+        class="btn"
+      >
+        ↗ Open / Focus Browser
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="browser-note">
+For reliability, this dashboard does not embed the live browser surface.
+CAPTCHA is completed in the real headed Chromium window opened by
+<code>scraper.py</code>.
+</div>
+
+</aside>
+
+
+
+<section class="card logcard">
+
+<div class="download">
+
+<div>
+
+<h2 style="margin-bottom:5px">
+  // LIVE SCRAPER LOG
+</h2>
+
+<div
+  id="csvState"
+  class="ready"
+>
+CSV will become available when the scraper exports it.
+</div>
+
+</div>
+
+<div
+  class="actions"
+  style="margin:0"
+>
+
+<button
+  id="downloadBtn"
+  class="btn primary"
+  disabled
+>
+↓ Download Shopify CSV
+</button>
+
+<button
+  id="reportBtn"
+  class="btn"
+  disabled
+>
+↓ Report
+</button>
+
+</div>
+
+</div>
+
+<pre
+  id="logs"
+  class="logs"
+>[Codexifyr] Dashboard ready. Turn SYSTEM ON to activate scraper controls.</pre>
+
+</section>
+
+</div>
+
+</main>
+
+</div>
+
+
+
+<script>
+
+const $ = id => document.getElementById(id);
+
+let enabled = false;
+let lastLog = "";
+
+
+function fmt(seconds){
+
+  seconds = Math.max(
+    0,
+    Number(seconds) || 0
+  );
+
+  const hours =
+    Math.floor(seconds / 3600);
+
+  const minutes =
+    Math.floor(
+      (seconds % 3600) / 60
+    );
+
+  const secs =
+    seconds % 60;
+
+  if(hours){
+
+    return (
+      `${hours}:` +
+      `${String(minutes).padStart(2,"0")}:` +
+      `${String(secs).padStart(2,"0")}`
+    );
+
+  }
+
+  return (
+    `${String(minutes).padStart(2,"0")}:` +
+    `${String(secs).padStart(2,"0")}`
+  );
+
+}
+
+
+function setError(text=""){
+
+  $("error").textContent = text;
+
+}
+
+
+async function api(path, body){
+
+  const response =
+    await fetch(
+      path,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:
+          JSON.stringify(body || {})
+      }
+    );
+
+  const json =
+    await response.json();
+
+  if(
+    !response.ok ||
+    json.ok === false
+  ){
+
+    throw new Error(
+      json.error ||
+      json.message ||
+      "Request failed"
+    );
+
+  }
+
+  return json;
+
+}
+
+
+
+function render(state){
+
+  const status =
+    state.status || "idle";
+
+  const running =
+    !!state.running;
+
+
+  $("statusText").textContent =
+    status
+      .replaceAll("_"," ")
+      .toUpperCase();
+
+
+  $("statusDot").className =
+    "dot " + status;
+
+
+  /* MAIN COUNTERS */
+
+  $("products").textContent =
+    state.products || 0;
+
+  $("variants").textContent =
+    state.variants || 0;
+
+  $("images").textContent =
+    state.images || 0;
+
+  $("collections").textContent =
+    state.collections_done || 0;
+
+  $("elapsed").textContent =
+    fmt(
+      state.elapsed_seconds
+    );
+
+
+  $("currentUrl").textContent =
+    state.current_url ||
+    "No active page";
+
+
+  /* COLLECTION PROGRESS */
+
+  const collectionsDone =
+    state.collections_done || 0;
+
+  const collectionsTotal =
+    state.collections_total || 0;
+
+
+  $("collectionText").textContent =
+    `Collections ${collectionsDone} / ${collectionsTotal}`;
+
+
+  let percentage = 0;
+
+  if(collectionsTotal > 0){
+
+    percentage =
+      Math.min(
+        100,
+        Math.round(
+          (
+            collectionsDone /
+            collectionsTotal
+          ) * 100
+        )
+      );
+
+  }
+
+
+  $("progressBar").style.width =
+    percentage + "%";
+
+
+  /* CAPTCHA */
+
+  $("captchaBanner")
+    .classList
+    .toggle(
+      "show",
+      status === "paused_captcha"
+    );
+
+
+  $("continueBtn").disabled =
+    !(
+      enabled &&
+      running &&
+      status === "paused_captcha"
+    );
+
+
+  /* START / STOP */
+
+  $("stopBtn").disabled =
+    !(
+      enabled &&
+      running
+    );
+
+
+  $("startBtn").disabled =
+    !(
+      enabled &&
+      !running
+    );
+
+
+  /* DOWNLOADS */
+
+  $("downloadBtn").disabled =
+    !state.csv_ready;
+
+  $("reportBtn").disabled =
+    !state.csv_ready;
+
+
+  $("csvState").textContent =
+    state.csv_ready
+      ? "✓ Shopify CSV is ready to download."
+      : "CSV will become available when the scraper exports it.";
+
+
+  if(state.last_error){
+
+    setError(
+      state.last_error
+    );
+
+  }
+
+
+  /* LOG OUTPUT */
+
+  const text =
+    (state.logs || [])
+      .join("\n");
+
+
+  if(
+    text &&
+    text !== lastLog
+  ){
+
+    const box =
+      $("logs");
+
+    box.textContent =
+      text;
+
+    box.scrollTop =
+      box.scrollHeight;
+
+    lastLog =
+      text;
+
+  }
+
+}
+
+
+
+async function poll(){
+
+  try{
+
+    const response =
+      await fetch(
+        "/api/status",
+        {
+          cache:"no-store"
+        }
+      );
+
+
+    const state =
+      await response.json();
+
+
+    render(
+      state
+    );
+
+  }
+  catch(error){
+
+    setError(
+      "Backend connection lost: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+
+/* SYSTEM SWITCH */
+
+$("systemToggle")
+  .addEventListener(
+    "change",
+    event => {
+
+      enabled =
+        event.target.checked;
+
+
+      $("systemText").textContent =
+        enabled
+          ? "SYSTEM ACTIVE"
+          : "SYSTEM OFF";
+
+
+      setError("");
+
+      poll();
+
+    }
+  );
+
+
+
+/* START SCRAPER */
+
+$("startBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      setError("");
+
+      try{
+
+        await api(
+          "/api/start",
+          {
+
+            url:
+              $("url").value,
+
+            delay:
+              Number(
+                $("delay").value
+              ),
+
+            retries:
+              Number(
+                $("retries").value
+              ),
+
+            reset:true
+
+          }
+        );
+
+
+        await poll();
+
+      }
+      catch(error){
+
+        setError(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+
+/* STOP SCRAPER */
+
+$("stopBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      try{
+
+        await api(
+          "/api/stop"
+        );
+
+        await poll();
+
+      }
+      catch(error){
+
+        setError(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+
+/* CONTINUE AFTER CAPTCHA */
+
+$("continueBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      try{
+
+        await api(
+          "/api/continue"
+        );
+
+        await poll();
+
+      }
+      catch(error){
+
+        setError(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+
+/* OPEN / FOCUS SCRAPER BROWSER */
+
+$("focusBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      try{
+
+        const result =
+          await api(
+            "/api/focus-browser"
+          );
+
+
+        if(
+          !result.focused
+        ){
+
+          setError(
+            result.message
+          );
+
+        }
+
+      }
+      catch(error){
+
+        setError(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+
+/* DOWNLOAD CSV */
+
+$("downloadBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      location.href =
+        "/api/download";
+
+    }
+  );
+
+
+
+/* DOWNLOAD REPORT */
+
+$("reportBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      location.href =
+        "/api/report";
+
+    }
+  );
+
+
+
+/* LIVE STATUS UPDATE */
+
+setInterval(
+  poll,
+  1000
+);
+
+poll();
+
+</script>
+
+</body>
+</html>
