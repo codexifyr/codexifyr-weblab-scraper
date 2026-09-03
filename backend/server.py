@@ -15,7 +15,7 @@ FRONT=ROOT/'frontend'
 DATA_ROOT=Path(os.environ.get('CODEXIFYR_DATA_DIR', str(ROOT/'runtime'))).expanduser().resolve()
 RUNTIME=DATA_ROOT
 JOBS=RUNTIME/'jobs'
-PLUGIN=ROOT/'codexifyr-migrator-importer.zip'
+PLUGIN=DATA_ROOT/'codexifyr-migrator-importer.zip'
 PLUGIN_SOURCE=ROOT/'wordpress-plugin'/'codexifyr-migrator-importer'
 SHOPIFY_SCRAPER=ROOT/'tools'/'shopify_scraper'/'scraper.py'
 for d in (RUNTIME,JOBS,RUNTIME/'uploads',RUNTIME/'logs'):d.mkdir(parents=True,exist_ok=True)
