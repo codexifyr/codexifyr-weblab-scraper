@@ -214,7 +214,7 @@ class JobManager:
         delay=float(payload.get('delay',j.get('delay',.7)) or .7);retries=int(payload.get('retries',(j.get('options') or {}).get('retries',3)) or 3);timeout=int(payload.get('timeout',(j.get('options') or {}).get('timeout',45000)) or 45000)
         headless=bool(payload.get('headless',(j.get('options') or {}).get('headless',False)))
         jd=self.job_dir(jid);jd.mkdir(parents=True,exist_ok=True)
-        
+
         if getattr(sys,'frozen',False):
             cmd=[sys.executable,'--shopify-worker','--url',source,'--output',str(jd),'--delay',str(delay),'--retries',str(retries),'--timeout',str(timeout)]
         else:
@@ -222,8 +222,31 @@ class JobManager:
         if reset:cmd.append('--reset')
         if headless:cmd.append('--headless')
         j.update({'running':True,'status':'running','message':'Starting unchanged Shopify product scraper…','started_at':time.time(),'delay':delay,'options':{'retries':retries,'timeout':timeout,'headless':headless},'csv_ready':False});self.save(jid)
+
         flags=getattr(subprocess,'CREATE_NEW_PROCESS_GROUP',0) if os.name=='nt' else 0
-        proc=subprocess.Popen(cmd,cwd=str(SHOPIFY_SCRAPER.parent),stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,bufsize=1,creationflags=flags)
+
+        # Vercel installs Python dependencies in runtime-specific paths.
+        # Forward the parent process import paths to the unchanged Shopify
+        # scraper subprocess so packages such as bs4 remain importable.
+        child_env = os.environ.copy()
+        existing_pythonpath = child_env.get("PYTHONPATH", "")
+        child_env["PYTHONPATH"] = os.pathsep.join(
+            [p for p in sys.path if p] +
+            ([existing_pythonpath] if existing_pythonpath else [])
+        )
+
+        proc=subprocess.Popen(
+            cmd,
+            cwd=str(SHOPIFY_SCRAPER.parent),
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1,
+            creationflags=flags,
+            env=child_env
+        )
+
         self.processes[jid]=proc
         def reader():
             try:
